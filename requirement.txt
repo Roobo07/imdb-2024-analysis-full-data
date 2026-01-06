@@ -1,0 +1,8 @@
+selenium
+pandas
+numpy
+sqlalchemy
+pymysql
+streamlit
+matplotlib
+seaborn
