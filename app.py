@@ -1,6 +1,9 @@
-import streamlit as st
+import sqlite3
 import pandas as pd
+import streamlit as st
+import os
 import matplotlib.pyplot as plt
+
 
 st.set_page_config(page_title="IMDb 2024 Movies Dashboard", layout="wide")
 
@@ -8,9 +11,14 @@ st.title("🎬 IMDb 2024 Movies Analysis Dashboard")
 
 @st.cache_data
 def load_data():
-    return pd.read_csv("data/processed/imdb_2024_cleaned.csv")
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    DB_PATH = os.path.join(BASE_DIR, "imdb_2024.db")
 
-df = load_data()
+    conn = sqlite3.connect(DB_PATH)
+    df = pd.read_sql("SELECT * FROM movies_2024", conn)
+    conn.close()
+
+    return df
 
 st.sidebar.header("🎛 Filter Movies")
 
@@ -111,3 +119,4 @@ st.pyplot(fig4)
 
 st.subheader("📋 Filtered Movie List")
 st.dataframe(filtered_df, use_container_width=True)
+
