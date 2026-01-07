@@ -1,0 +1,44 @@
+import sqlite3
+import pandas as pd
+import os
+
+# ----------------------------
+# Paths
+# ----------------------------
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA_PATH = os.path.join(BASE_DIR, "data", "processed", "imdb_2024_cleaned.csv")
+DB_PATH = os.path.join(BASE_DIR, "database", "imdb_2024.db")
+
+# ----------------------------
+# Create database folder
+# ----------------------------
+os.makedirs(os.path.join(BASE_DIR, "database"), exist_ok=True)
+
+# ----------------------------
+# Load cleaned data
+# ----------------------------
+print("📥 Loading cleaned CSV...")
+df = pd.read_csv(DATA_PATH)
+
+print(f"Rows loaded: {len(df)}")
+
+# ----------------------------
+# Connect to SQLite
+# ----------------------------
+print("🗄 Connecting to SQLite database...")
+conn = sqlite3.connect(DB_PATH)
+
+# ----------------------------
+# Store into SQL table
+# ----------------------------
+df.to_sql(
+    name="movies_2024",
+    con=conn,
+    if_exists="replace",
+    index=False
+)
+
+conn.close()
+
+print("✅ Data successfully loaded into SQLite")
+print(f"📁 Database saved at: {DB_PATH}")
